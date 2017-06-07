@@ -1,3 +1,3 @@
 import * as $ from "jquery";
 
-$('#app').css({ 'background-color': 'green' });
+$('#app').css({ 'background-color': 'red' });
