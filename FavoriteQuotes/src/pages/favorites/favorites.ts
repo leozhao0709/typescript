@@ -1,12 +1,10 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { ModalController, IonicPage } from 'ionic-angular';
+import { Quote } from '../../data/quote.interface';
+import { QuotesProvider } from '../../providers/quotes/quotes';
+import { QuotePage } from '../quote/quote';
+import { SettingsProvider } from '../../providers/settings/settings';
 
-/**
- * Generated class for the FavoritesPage page.
- *
- * See http://ionicframework.com/docs/components/#navigation for more info
- * on Ionic pages and navigation.
- */
 @IonicPage()
 @Component({
   selector: 'page-favorites',
@@ -14,11 +12,30 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class FavoritesPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  quotes: Quote[];
+
+  constructor(private _quotesProvider: QuotesProvider, private _modelCtrl: ModalController, private _settingsProvider: SettingsProvider, ) { };
+
+  ionViewWillEnter() {
+    this.quotes = this._quotesProvider.getFavoriteQuotes();
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad FavoritesPage');
+  onViewQuote(quote) {
+    const modal = this._modelCtrl.create(QuotePage, quote);
+    modal.present();
+    modal.onDidDismiss((unfavorite: boolean) => {
+      if (unfavorite) {
+        this.onUnfavorite(quote);
+      }
+    });
   }
 
+  onUnfavorite(quote: Quote) {
+    this._quotesProvider.removeQuoteFromFavorites(quote);
+    this.quotes = this._quotesProvider.getFavoriteQuotes();
+  }
+
+  getBackground() {
+    return this._settingsProvider.isAltBackground() ? 'altQuoteBackground' : 'quoteBackground';
+  }
 }

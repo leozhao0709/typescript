@@ -13,7 +13,7 @@ export class Home extends React.Component<HomeProps, {}> {
 
   onButtonClick(e: Event) {
     e.preventDefault();
-    alert(this.refs.name);
+    alert(this.refs.name.value);
   }
 
   render() {

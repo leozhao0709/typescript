@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController, IonicPage, NavParams } from 'ionic-angular';
 import { Quote } from '../../data/quote.interface';
+import { QuotesProvider } from '../../providers/quotes/quotes';
 
 /**
  * Generated class for the QuotesPage page.
@@ -17,7 +18,7 @@ export class QuotesPage implements OnInit {
 
   quoteGroup: { category: string, quotes: Quote[], icon: string };
 
-  constructor(private navParams: NavParams, private _alerCtrl: AlertController, ) {
+  constructor(private navParams: NavParams, private _alerCtrl: AlertController, private _quotesProvider: QuotesProvider, ) {
     this.quoteGroup = navParams.data;
   }
 
@@ -35,11 +36,10 @@ export class QuotesPage implements OnInit {
       subTitle: 'Are you sure?',
       message: 'Are you sure you want to add this quote?',
       buttons: [
-        'Ok',
         {
           text: 'Yes, go ahead',
           handler: () => {
-            console.log(`Yes, go ahead`);
+            this._quotesProvider.addQuoteToFavorites(quote);
           }
         },
         {
@@ -51,8 +51,15 @@ export class QuotesPage implements OnInit {
         }
       ]
     }).present();
-
-
   }
+
+  onRemoveToFavorite(quote: Quote) {
+    this._quotesProvider.removeQuoteFromFavorites(quote);
+  }
+
+  isFavorite(quote: Quote) {
+    return this._quotesProvider.isQuoteFavorite(quote);
+  }
+
 
 }
